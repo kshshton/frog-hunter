@@ -4,7 +4,7 @@ from urllib.parse import quote
 import requests
 
 
-class Api():
+class FrogAPI():
     """Object made for controlling requests and responses of API"""
     city: str
     url: str
@@ -45,7 +45,7 @@ class Api():
         )
 
 
-    def city_coordinates(self) -> Generator[dict, dict, dict]:
+    def frogs_in_city(self) -> Generator[dict, dict, dict]:
         response = self._get_response_of_post_request()
         locations = response.json()['hits']
         for location in locations:
