@@ -36,7 +36,7 @@ class FrogAPI():
         self.data = '{"params":"query=' + quote(city.lower()) + '&hitsPerPage=900&page=0"}'
 
 
-    def _get_response_of_post_request(self):
+    def _get_response_of_post_request(self) -> object:
         return requests.post(
             url=self.url,
             params=self.params,
