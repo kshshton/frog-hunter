@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_in_flutter/src/frog_api.dart';
+import 'src/models/model_frog.dart';
 
 void main() {
   runApp(const MyApp());
@@ -30,17 +31,21 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   FrogAPI? _api;
-  dynamic _response;
+  Frog? _frog;
 
   _MyHomePageState() {
     _api = FrogAPI();
   }
 
   void _huntDown() async {
-    var response = await _api?.getResponse()
-      .then((json) => json['hits'][0]);
+    var response = await _api?.getResponse();
     setState(() {
-      _response = response;
+      for (final hit in response?['hits']) {
+        var frog = Frog.fromHit(hit);
+        if (frog.status == "CLOSED") {
+          _frog = frog;
+        }
+      }
     });
   }
 
@@ -51,7 +56,9 @@ class _MyHomePageState extends State<MyHomePage> {
         title: const Text("Frog hunter"),
       ),
       body: Center(
-        child: _response != null ? Text('Frog location: ${_response['_geoloc']?.toString()}') : const Text(''),
+        child: _frog != null ? Text(
+            'Frog location: ${_frog?.coords}'
+          ) : const Text(''),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: _huntDown,
