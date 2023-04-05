@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_maps_in_flutter/src/frog_api.dart';
-import 'src/models/model_frog.dart';
+import 'src/models/frog.dart';
 
 void main() {
   runApp(const MyApp());
@@ -12,7 +13,6 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Frog Hunter',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
@@ -31,19 +31,27 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   FrogAPI? _api;
-  Frog? _frog;
+  final Map<String, Marker> _markers = {};
 
   _MyHomePageState() {
     _api = FrogAPI();
   }
 
-  void _huntDown() async {
-    var response = await _api?.getResponse();
+  Future<void> _onMapCreated(GoogleMapController controller) async {
+    final response = await _api?.getResponse();
     setState(() {
+      _markers.clear();
       for (final hit in response?['hits']) {
         var frog = Frog.fromHit(hit);
         if (frog.status == "CLOSED") {
-          _frog = frog;
+          final coords = LatLng(frog.lat, frog.lng);
+          final identity = MarkerId(frog.id);
+          final marker = Marker(
+            markerId: identity,
+            position: coords,
+          );
+          _markers[frog.address] = marker;
+          controller.animateCamera(CameraUpdate.newLatLngZoom(coords, 15));
         }
       }
     });
@@ -53,17 +61,19 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Frog hunter"),
+        title: Image.asset(
+          '../assets/images/logo.png',
+          height: 50,
+          fit: BoxFit.cover,
+        ),
       ),
-      body: Center(
-        child: _frog != null ? Text(
-            'Frog location: ${_frog?.coords}'
-          ) : const Text(''),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _huntDown,
-        tooltip: 'Hunt down',
-        child: const Icon(Icons.add),
+      body: GoogleMap(
+        onMapCreated: _onMapCreated,
+        initialCameraPosition: const CameraPosition(
+          target: LatLng(0, 0),
+          zoom: 2,
+        ),
+        markers: _markers.values.toSet(),
       ),
     );
   }
