@@ -1,15 +1,17 @@
 import 'dart:convert';
 import 'dart:core';
-import 'device.dart';
+import '../device.dart';
 import 'package:http/http.dart' as http;
 
-class FrogAPI {
+class FrogScan {
   Uri? _url;
   Map<String, String>? _headers;
   String? _data;
   Device? _device;
+  final int _radius;
 
-  FrogAPI() {
+  FrogScan(this._radius) {
+    _radius.toString();
     _device = Device();
   }
 
@@ -26,15 +28,15 @@ class FrogAPI {
       'Accept-Encoding': 'gzip',
     };
     _data = await _getPayload();
-    var res = await http.post(_url!, headers: _headers, body: _data);
+    final res = await http.post(_url!, headers: _headers, body: _data);
     if (res.statusCode != 200) throw Exception('http.post error: statusCode=${res.statusCode}');
     return jsonDecode(res.body);
   }
 
   Future<String> _getPayload() async {
-    var position = await _device?.getPosition();
-    var lat = position?.latitude.toString();
-    var lng = position?.longitude.toString();
-    return '{"params":"query=&hitsPerPage=9999&facetFilters=%5B%5D&aroundLatLng=$lat,$lng&aroundRadius=3000"}';
+    final position = await _device?.getPosition();
+    final lat = position?.latitude.toString();
+    final lng = position?.longitude.toString();
+    return '{"params":"query=&hitsPerPage=9999&facetFilters=%5B%5D&aroundLatLng=$lat,$lng&aroundRadius=$_radius"}';
   }
 }
