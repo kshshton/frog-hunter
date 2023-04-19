@@ -1,9 +1,9 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_maps_in_flutter/src/scrape/frog_scan.dart';
-import 'package:maps_toolkit/maps_toolkit.dart' as mapTool;
 import 'package:location/location.dart';
 import 'src/models/frog.dart';
 
@@ -32,11 +32,12 @@ class MyHomePage extends StatefulWidget {
   @override
   State<MyHomePage> createState() => _MyHomePageState();
 }
-// #f1f3f4
 
 class _MyHomePageState extends State<MyHomePage> {
   final Map<String, Marker> _markers = {};
   final Set<Circle> _radius = {};
+  final List _blackList = [];
+  final double _radiusDistance = 1000;
   LocationData? _currentLocation;
   FrogScan? _scan;
 
@@ -80,7 +81,9 @@ class _MyHomePageState extends State<MyHomePage> {
             markerId: identity,
             position: coords,
           );
-          _markers[frog.address] = marker;
+          if (!_blackList.contains(marker.position)) {
+            _markers[frog.address] = marker;
+          }
         }
       }
     });
@@ -95,7 +98,7 @@ class _MyHomePageState extends State<MyHomePage> {
             _currentLocation!.latitude!,
             _currentLocation!.longitude!,
           ),
-          radius: 500,
+          radius: _radiusDistance,
           strokeWidth: 2,
           fillColor: const Color.fromARGB(80, 68, 68, 255)
         )
@@ -103,15 +106,35 @@ class _MyHomePageState extends State<MyHomePage> {
       Timer(const Duration(seconds: 1), () {
         setState(() {
           _radius.clear();
+          try {
+            _markers.forEach((key, value) {
+              if (distanceBetween(_currentLocation, value) < _radiusDistance) {
+                _markers.remove(key);
+                _blackList.add(value.position);
+              }
+            });
+          } catch(_) {}
         });
       });
     });
   }
 
+  double distanceBetween(currentLocation, marker){
+    final lat1 = currentLocation.latitude;
+    final lng1 = currentLocation.longitude;
+    final lat2 = marker.position.latitude;
+    final lng2 = marker.position.longitude;
+    double point = 0.017453292519943295;
+    double calc = 0.5 - cos((lat2 - lat1) * point)/2 + 
+          cos(lat1 * point) * cos(lat2 * point) * 
+          (1 - cos((lng2 - lng1) * point))/2;
+    return 1000*(12742 * asin(sqrt(calc)));
+  }
+
   @override
   void initState() {
     super.initState();
-    _markers;
+    scanLocation();
     _radius;
   }
 
@@ -131,7 +154,6 @@ class _MyHomePageState extends State<MyHomePage> {
         circles: Set<Circle>.of(_radius),
       ),
       floatingActionButton: Row(
-        // GoogleMap
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
             FloatingActionButton(
