@@ -10,8 +10,10 @@ class NavBar extends StatelessWidget {
     return Drawer(
       child: ListView(
         children: [
-          const SizedBox(
-            height: 50,
+          ListTile(
+            leading: const Icon(Icons.arrow_back),
+            title: const Text('Back'),
+            onTap: () => Navigator.pop(context),
           ),
           ListTile(
             leading: const Icon(Icons.home),
@@ -19,14 +21,14 @@ class NavBar extends StatelessWidget {
             onTap: () => Navigator.pushNamed(context, '/'),
           ),
           ListTile(
+            leading: const Icon(Icons.control_point_duplicate),
+            title: const Text('Points'),
+            onTap: () => Navigator.pushNamed(context, '/points'),
+          ),
+          ListTile(
             leading: const Icon(Icons.map),
             title: const Text('Map'),
             onTap: () => Navigator.pushNamed(context, '/locator'),
-          ),
-          ListTile(
-            leading: const Icon(Icons.account_circle),
-            title: const Text('Profile'),
-            onTap: () => Navigator.pushNamed(context, '/profile'),
           ),
         ],
       ),

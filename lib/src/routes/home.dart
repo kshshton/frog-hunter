@@ -13,6 +13,21 @@ class Home extends StatelessWidget {
         title: const Text('Frog Hunter'),
       ),
       drawer: const NavBar(),
+      body: SizedBox(
+        width: double.infinity,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: const [
+            Image(
+              image: AssetImage('../assets/images/logo.png'),
+              width: 300,
+            ),
+            SizedBox(
+              height: 50,
+            )
+          ]
+        ),
+      ),
     );
   }
 }

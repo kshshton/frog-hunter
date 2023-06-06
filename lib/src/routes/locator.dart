@@ -10,6 +10,10 @@ import '../components/navbar.dart';
 class Locator extends StatefulWidget {
   const Locator({Key? key}) : super(key: key);
 
+  static List getBlackList() {
+    return _LocatorState.blackList;
+  }
+
   @override
   State<Locator> createState() => _LocatorState();
 }
@@ -17,7 +21,7 @@ class Locator extends StatefulWidget {
 class _LocatorState extends State<Locator> {
   final Map<String, Marker> _markers = {};
   final Set<Circle> _radius = {};
-  final List _blackList = [];
+  static final List blackList = [];
   final double _radiusDistance = 1000;
   LocationData? _currentLocation;
   FrogScan? _scan;
@@ -62,7 +66,7 @@ class _LocatorState extends State<Locator> {
             markerId: identity,
             position: coords,
           );
-          if (!_blackList.contains(marker.position)) {
+          if (!blackList.contains(marker.position)) {
             _markers[frog.address] = marker;
           }
         }
@@ -91,7 +95,7 @@ class _LocatorState extends State<Locator> {
             _markers.forEach((key, value) {
               if (distanceBetween(_currentLocation, value) < _radiusDistance) {
                 _markers.remove(key);
-                _blackList.add(value.position);
+                blackList.add(value.position);
               }
             });
           } catch(_) {}
