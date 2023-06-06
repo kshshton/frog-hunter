@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'dart:core';
-import '../device.dart';
+import 'device.dart';
 import 'package:http/http.dart' as http;
 
 class FrogScan {
