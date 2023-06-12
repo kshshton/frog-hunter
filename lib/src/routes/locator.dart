@@ -104,16 +104,16 @@ class _LocatorState extends State<Locator> {
     });
   }
 
-  double distanceBetween(currentLocation, marker){
+  double distanceBetween(currentLocation, marker) {
     final lat1 = currentLocation.latitude;
     final lng1 = currentLocation.longitude;
     final lat2 = marker.position.latitude;
     final lng2 = marker.position.longitude;
     double point = 0.017453292519943295;
-    double calc = 0.5 - cos((lat2 - lat1) * point)/2 + 
+    double calc = 0.5 - cos((lat2 - lat1) * point) / 2 + 
           cos(lat1 * point) * cos(lat2 * point) * 
-          (1 - cos((lng2 - lng1) * point))/2;
-    return 1000*(12742 * asin(sqrt(calc)));
+          (1 - cos((lng2 - lng1) * point)) / 2;
+    return 1000 * (12742 * asin(sqrt(calc)));
   }
 
   @override

@@ -16,7 +16,9 @@ class FrogScan {
   }
 
   Future<Map<String, dynamic>> getResponse() async {
-    _url = Uri.parse('https://apkykk0pza-dsn.algolia.net/1/indexes/prod_locator_prod_zabka/query?x-algolia-agent=Algolia%20for%20vanilla%20JavaScript%203.22.1&x-algolia-application-id=APKYKK0PZA&x-algolia-api-key=71ca67cda813cec86431992e5e67ede2');
+    _url = Uri.parse('''https://apkykk0pza-dsn.algolia.net/1/indexes/prod_locator_prod_zabka/
+    query?x-algolia-agent=Algolia%20for%20vanilla%20JavaScript%203.22.1&x-algolia-application
+    -id=APKYKK0PZA&x-algolia-api-key=71ca67cda813cec86431992e5e67ede2''');
     _headers = {
       'Connection': 'keep-alive',
       'Sec-Fetch-Dest': 'empty',
