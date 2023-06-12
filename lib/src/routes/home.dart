@@ -19,7 +19,7 @@ class Home extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: const [
             Image(
-              image: AssetImage('../assets/images/logo.png'),
+              image: AssetImage('assets/images/logo.png'),
               width: 300,
             ),
             SizedBox(

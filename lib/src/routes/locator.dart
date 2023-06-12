@@ -22,7 +22,7 @@ class _LocatorState extends State<Locator> {
   final Map<String, Marker> _markers = {};
   final Set<Circle> _radius = {};
   static final List blackList = [];
-  final double _radiusDistance = 1000;
+  final double _radiusDistance = 10;
   LocationData? _currentLocation;
   FrogScan? _scan;
 
@@ -132,7 +132,7 @@ class _LocatorState extends State<Locator> {
       ),
       body: GoogleMap(
         onMapCreated: getCurrentLocation,
-        mapType: MapType.terrain,
+        mapType: MapType.normal,
         initialCameraPosition: const CameraPosition(
           target: LatLng(0, 0),
           zoom: 2,
@@ -148,7 +148,7 @@ class _LocatorState extends State<Locator> {
               onPressed: scanLocation,
               tooltip: 'Scan Frogs',
               child: Image.asset(
-                '../assets/images/scan.png',
+                'assets/images/scan.png',
                 height: 50,
                 fit: BoxFit.cover,
               ),
@@ -161,7 +161,7 @@ class _LocatorState extends State<Locator> {
               onPressed: huntDown,
               tooltip: 'Hunt Down',
               child: Image.asset(
-                '../assets/images/logo.png',
+                'assets/images/logo.png',
                 height: 50,
                 fit: BoxFit.cover,
               ),
